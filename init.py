@@ -12,8 +12,72 @@ exec(open("./model.py").read())
 
 x = tf.placeholder(tf.float32, shape=[None, img_size_flat], name='x')
 x_image = tf.reshape(x, [-1, img_size, img_size, num_channels])
-y_true = tf.placeholder(tf.float32, shape=[None, num_classes], name='y_true')
+y_true = tf.placeholder(tf.float32, shape=[None, n_classes], name='y_true')
 y_true_cls = tf.argmax(y_true, dimension=1)
+
+layer_conv11, weights_conv11 = \
+    new_conv_layer(input=x_image,
+                   num_input_channels=num_channels,
+                   filter_size=filter_size11,
+                   num_filters=num_filters11,
+                   use_pooling=False)
+
+
+
+layer_conv12, weights_conv12 = \
+    new_conv_layer(input=layer_conv11,
+                   num_input_channels=num_filters11,
+                   filter_size=filter_size12,
+                   num_filters=num_filters12,
+                   use_pooling=True)
+
+layer_conv11, weights_conv11 = \
+    new_conv_layer(input=x_image,
+                   num_input_channels=num_channels,
+                   filter_size=filter_size11,
+                   num_filters=num_filters11,
+                   use_pooling=False)
+
+
+
+layer_conv12, weights_conv12 = \
+    new_conv_layer(input=layer_conv11,
+                   num_input_channels=num_filters11,
+                   filter_size=filter_size12,
+                   num_filters=num_filters12,
+                   use_pooling=True)
+
+layer_conv11, weights_conv11 = \
+    new_conv_layer(input=x_image,
+                   num_input_channels=num_channels,
+                   filter_size=filter_size11,
+                   num_filters=num_filters11,
+                   use_pooling=False)
+
+
+
+layer_conv12, weights_conv12 = \
+    new_conv_layer(input=layer_conv11,
+                   num_input_channels=num_filters11,
+                   filter_size=filter_size12,
+                   num_filters=num_filters12,
+                   use_pooling=True)
+
+layer_conv11, weights_conv11 = \
+    new_conv_layer(input=x_image,
+                   num_input_channels=num_channels,
+                   filter_size=filter_size11,
+                   num_filters=num_filters11,
+                   use_pooling=False)
+
+
+
+layer_conv12, weights_conv12 = \
+    new_conv_layer(input=layer_conv11,
+                   num_input_channels=num_filters11,
+                   filter_size=filter_size12,
+                   num_filters=num_filters12,
+                   use_pooling=True)
 
 layer_conv11, weights_conv11 = \
     new_conv_layer(input=x_image,
@@ -46,7 +110,7 @@ layer_fc1 = new_fc_layer(input=layer_flat,
 
 layer_fc2 = new_fc_layer(input=layer_fc1,
                          num_inputs=fc_size,
-                         num_outputs=num_classes,
+                         num_outputs=n_classes,
                          use_relu=False)
 
 

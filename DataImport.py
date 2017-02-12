@@ -1,6 +1,8 @@
 from __future__ import print_function
 
 #matplotlib inline
+
+import collections
 import matplotlib.pyplot as plt
 import tensorflow as tf
 import numpy as np
@@ -8,7 +10,7 @@ from sklearn.metrics import confusion_matrix
 import time
 from datetime import timedelta
 import math
-
+from tensorflow.contrib.learn.python.learn.datasets import base
 
 from time import time
 import logging
@@ -34,8 +36,8 @@ n_samples, h, w = lfw_people.images.shape
 
 # for machine learning we use the 2 data directly (as relative pixel
 # positions info is ignored by this model)
-X = lfw_people.images
-n_features = X.shape[1]*X.shape[2]
+X = lfw_people.data
+n_features = X.shape[1]
 
 # the label to predict is the id of the person
 y = lfw_people.target
@@ -54,22 +56,31 @@ print("w: %d" % w)
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.25, random_state=42)
 
-#images = tf.Variable(X_train, name="images")
-#labels = tf.Variable(y_train, name="labels")
-
 
 images = X_train
 labels = y_train
-images = images.reshape(images.shape[0],images.shape[1], images.shape[2], 1)
-train = tf.contrib.learn.python.learn.datasets.mnist.DataSet(images, labels)
+
+b = np.zeros((labels.size, labels.max()+1))
+b[np.arange(labels.size),labels] = 1
+
+Dataset = collections.namedtuple('Dataset', ['images', 'labels', 'cls'])
+Datasets = collections.namedtuple('Datasets', ['train', 'test'])
+#images = images.reshape(images.shape[0],images.shape[1], images.shape[2], 1)
+train = Dataset(images=images, labels=b, cls=labels)
+#train = tf.contrib.learn.python.learn.datasets.mnist.DataSet(images, labels, one_hot=1, fake_data=1)
 
 images = X_test
 labels = y_test
-images = images.reshape(images.shape[0],images.shape[1], images.shape[2], 1)
-test = tf.contrib.learn.python.learn.datasets.mnist.DataSet(images, labels)
+b = np.zeros((labels.size, labels.max()+1))
+b[np.arange(labels.size),labels] = 1
+#images = images.reshape(images.shape[0],images.shape[1], images.shape[2], 1)
+test = Dataset(images=images, labels=b, cls=labels)
+#test = tf.contrib.learn.python.learn.datasets.mnist.DataSet(images, labels, one_hot=1, fake_data=1)
+
+data = Datasets(train=train, test=test)
+
+#print(data)
+#print(data.train)
+#print(data.train.labels)
 
 
-print(train.labels)
-print(test.labels)
-#data = {"train": {"images":X_train,"labels":y_train},
-#		"test": {"images":X_test,"labels":y_test}}

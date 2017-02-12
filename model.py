@@ -1,19 +1,52 @@
-#print(data)
-data.test.cls = np.argmax(data.test.labels, axis=1)
+
+#data.test.cls = np.argmax(data.test.labels, axis=1)
 
 # Convolutional Layer 11.
-filter_size11 = 3          # Convolution filters are 5 x 5 pixels.
+filter_size11 = 3          # Convolution filters are 3x3 pixels.
 num_filters11 = 32         # There are 16 of these filters.
 
 # Convolutional Layer 12.
-filter_size12 = 3          # Convolution filters are 5 x 5 pixels.
+filter_size12 = 3          # Convolution filters are 3x3 pixels.
 num_filters12 = 64         # There are 36 of these filters.
 
+
+# Convolutional Layer 21.
+filter_size21 = 3          # Convolution filters are 3x3 pixels.
+num_filters21 = 64         # There are 16 of these filters.
+
+# Convolutional Layer 22.
+filter_size22 = 3          # Convolution filters are 3x3 pixels.
+num_filters22 = 128         # There are 36 of these filters.
+
+# Convolutional Layer 31.
+filter_size31 = 3          # Convolution filters are 3x3 pixels.
+num_filters31 = 96         # There are 16 of these filters.
+
+# Convolutional Layer 32.
+filter_size32 = 3          # Convolution filters are 3x3 pixels.
+num_filters32 = 192         # There are 36 of these filters.
+
+# Convolutional Layer 41.
+filter_size41 = 3          # Convolution filters are 3x3 pixels.
+num_filters41 = 128         # There are 16 of these filters.
+
+# Convolutional Layer 42.
+filter_size42 = 3          # Convolution filters are 3x3 pixels.
+num_filters42 = 256         # There are 36 of these filters.
+
+# Convolutional Layer 51.
+filter_size51 = 3          # Convolution filters are 3x3 pixels.
+num_filters51 = 160         # There are 16 of these filters.
+
+# Convolutional Layer 52.
+filter_size52 = 3          # Convolution filters are 3x3 pixels.
+num_filters52 = 320         # There are 36 of these filters.
+
 # Fully-connected layer.
-fc_size = 1000               # Number of neurons in fully-connected layer.
+fc_size = 10575               # Number of neurons in fully-connected layer.
 
 
-# We know that MNIST images are 28 pixels in each dimension.
+# We know that MNIST images are 100 pixels in each dimension.
 img_size = 100
 
 # Images are stored in one-dimensional arrays of this length.
