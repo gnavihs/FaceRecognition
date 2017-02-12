@@ -1,3 +1,4 @@
+#print(data)
 data.test.cls = np.argmax(data.test.labels, axis=1)
 
 # Convolutional Layer 11.

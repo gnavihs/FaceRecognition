@@ -34,8 +34,8 @@ n_samples, h, w = lfw_people.images.shape
 
 # for machine learning we use the 2 data directly (as relative pixel
 # positions info is ignored by this model)
-X = lfw_people.data
-n_features = X.shape[1]
+X = lfw_people.images
+n_features = X.shape[1]*X.shape[2]
 
 # the label to predict is the id of the person
 y = lfw_people.target
@@ -54,5 +54,22 @@ print("w: %d" % w)
 X_train, X_test, y_train, y_test = train_test_split(
     X, y, test_size=0.25, random_state=42)
 
-data = {"train": {"images":X_train,"labels":y_train},
-		"test": {"images":X_test,"labels":y_test}}
+#images = tf.Variable(X_train, name="images")
+#labels = tf.Variable(y_train, name="labels")
+
+
+images = X_train
+labels = y_train
+images = images.reshape(images.shape[0],images.shape[1], images.shape[2], 1)
+train = tf.contrib.learn.python.learn.datasets.mnist.DataSet(images, labels)
+
+images = X_test
+labels = y_test
+images = images.reshape(images.shape[0],images.shape[1], images.shape[2], 1)
+test = tf.contrib.learn.python.learn.datasets.mnist.DataSet(images, labels)
+
+
+print(train.labels)
+print(test.labels)
+#data = {"train": {"images":X_train,"labels":y_train},
+#		"test": {"images":X_test,"labels":y_test}}
