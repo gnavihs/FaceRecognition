@@ -5,7 +5,7 @@ exec(open("./init.py").read())
 train_batch_size = 64
 _epochs_completed = 0
 _index_in_epoch = 0
-perm0 = np.arange(data.train.images.shape[0])
+perm0 = np  .arange(data.train.images.shape[0])
 np.random.shuffle(perm0)
 _images = data.train.images[perm0]
 _labels = data.train.labels[perm0]
