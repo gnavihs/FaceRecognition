@@ -36,7 +36,7 @@ def optimize(num_iterations):
         # for placeholder variables in the TensorFlow graph.
         feed_dict_train = {x: x_batch,
                            y_true: y_true_batch,
-                           keep_prob: 1.0}
+                           keep_prob: 0.6}
 
         session.run(optimizer, feed_dict=feed_dict_train)
 
@@ -132,5 +132,7 @@ optimize(num_iterations=99)
 print_test_accuracy()
 optimize(num_iterations=900)
 print_test_accuracy()
-optimize(num_iterations=9000)
+optimize(num_iterations=1000)
+print_test_accuracy()
+optimize(num_iterations=8000)
 print_test_accuracy()

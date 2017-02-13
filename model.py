@@ -1,6 +1,4 @@
 
-#data.test.cls = np.argmax(data.test.labels, axis=1)
-
 # Convolutional Layer 11.
 filter_size11 = 3          # Convolution filters are 3x3 pixels.
 num_filters11 = 32         # There are 32 of these filters.
@@ -42,12 +40,8 @@ num_filters51 = 160         # There are 160 of these filters.
 filter_size52 = 3          # Convolution filters are 3x3 pixels.
 num_filters52 = 320         # There are 320 of these filters.
 
-# Fully-connected layer.
-fc_size = 10575               # Number of neurons in fully-connected layer.
-
-
 # We know that MNIST images are 100 pixels in each dimension.
-img_size = 100
+img_size = h
 
 # Images are stored in one-dimensional arrays of this length.
 img_size_flat = img_size * img_size
@@ -71,32 +65,30 @@ def new_conv_layer(input,              # The previous layer.
                    filter_size,        # Width and height of each filter.
                    num_filters,        # Number of filters.
                    use_pooling=True):     # Use 2x2 max-pooling.
+  shape = [filter_size, filter_size, num_input_channels, num_filters]
 
-    shape = [filter_size, filter_size, num_input_channels, num_filters]
+  # Create new weights aka. filters with the given shape.
+  weights = new_weights(shape=shape)
 
-    # Create new weights aka. filters with the given shape.
-    weights = new_weights(shape=shape)
+  # Create new biases, one for each filter.
+  biases = new_biases(length=num_filters)
 
-    # Create new biases, one for each filter.
-    biases = new_biases(length=num_filters)
+  layer = tf.nn.conv2d(input=input,
+                       filter=weights,
+                       strides=[1, 1, 1, 1],
+                       padding='SAME')
 
-    layer = tf.nn.conv2d(input=input,
-                         filter=weights,
-                         strides=[1, 1, 1, 1],
-                         padding='SAME')
+  layer += biases
 
-    layer += biases
+  # Use pooling to down-sample the image resolution?
+  if use_pooling:
+      layer = tf.nn.max_pool(value=layer,
+                             ksize=[1, 2, 2, 1],
+                             strides=[1, 2, 2, 1],
+                             padding='SAME')
 
-    # Use pooling to down-sample the image resolution?
-    if use_pooling:
-        layer = tf.nn.max_pool(value=layer,
-                               ksize=[1, 2, 2, 1],
-                               strides=[1, 2, 2, 1],
-                               padding='SAME')
-
-    layer = tf.nn.relu(layer)
-
-    return layer, weights
+  layer = tf.nn.relu(layer)
+  return layer, weights
 
 
 def flatten_layer(layer):
@@ -109,9 +101,6 @@ def flatten_layer(layer):
     # [num_images, img_height * img_width * num_channels]
 
     return layer_flat, num_features
-
-
-
 
 def new_fc_layer(input,          # The previous layer.
                  num_inputs,     # Num. inputs from prev. layer.
