@@ -4,6 +4,14 @@ exec(open("./init.py").read())
 session = tf.Session()
 session.run(tf.global_variables_initializer())
 train_batch_size = 64
+_epochs_completed = 0
+_index_in_epoch = 0
+perm0 = numpy.arange(data.train.images.shape[0])
+numpy.random.shuffle(perm0)
+_images = data.train.images[perm0]
+_labels = data.train.labels[perm0]
+
+
 # Counter for total number of iterations performed so far.
 total_iterations = 0
 
@@ -20,7 +28,7 @@ def optimize(num_iterations):
         # Get a batch of training examples.
         # x_batch now holds a batch of images and
         # y_true_batch are the true labels for those images.
-        x_batch, y_true_batch = data.train.next_batch(train_batch_size)
+        x_batch, y_true_batch = next_batch(data.train, train_batch_size)
 
         # Put the batch into a dict with the proper names
         # for placeholder variables in the TensorFlow graph.

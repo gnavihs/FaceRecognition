@@ -26,7 +26,7 @@ from sklearn.svm import SVC
 
 
 from sklearn.datasets import fetch_lfw_people
-lfw_people = fetch_lfw_people(min_faces_per_person=70, resize=0.4, slice_=(slice(0, 250, None), slice(0, 250, None)))
+lfw_people = fetch_lfw_people(min_faces_per_person=70, resize=0.04, slice_=(slice(0, 250, None), slice(0, 250, None)))
 
 #for name in lfw_people.target_names:
 #	print(name)
@@ -58,29 +58,29 @@ X_train, X_test, y_train, y_test = train_test_split(
 
 
 images = X_train
-labels = y_train
+cls = y_train
 
-b = np.zeros((labels.size, labels.max()+1))
-b[np.arange(labels.size),labels] = 1
+labels = np.zeros((cls.size, cls.max()+1))
+labels[np.arange(cls.size),cls] = 1
 
 Dataset = collections.namedtuple('Dataset', ['images', 'labels', 'cls'])
 Datasets = collections.namedtuple('Datasets', ['train', 'test'])
 #images = images.reshape(images.shape[0],images.shape[1], images.shape[2], 1)
-train = Dataset(images=images, labels=b, cls=labels)
-#train = tf.contrib.learn.python.learn.datasets.mnist.DataSet(images, labels, one_hot=1, fake_data=1)
+train = Dataset(images=images, labels=labels, cls=cls)
+#train = tf.contrib.learn.python.learn.datasets.mnist.DataSet(images, cls, one_hot=1, fake_data=1)
 
 images = X_test
-labels = y_test
-b = np.zeros((labels.size, labels.max()+1))
-b[np.arange(labels.size),labels] = 1
+cls = y_test
+labels = np.zeros((cls.size, cls.max()+1))
+labels[np.arange(cls.size),cls] = 1
 #images = images.reshape(images.shape[0],images.shape[1], images.shape[2], 1)
-test = Dataset(images=images, labels=b, cls=labels)
-#test = tf.contrib.learn.python.learn.datasets.mnist.DataSet(images, labels, one_hot=1, fake_data=1)
+test = Dataset(images=images, labels=labels, cls=cls)
+#test = tf.contrib.learn.python.learn.datasets.mnist.DataSet(images, cls, one_hot=1, fake_data=1)
 
 data = Datasets(train=train, test=test)
 
 #print(data)
 #print(data.train)
-#print(data.train.labels)
+#print(data.train.cls)
 
 

@@ -7,7 +7,7 @@ num_filters11 = 32         # There are 16 of these filters.
 
 # Convolutional Layer 12.
 filter_size12 = 3          # Convolution filters are 3x3 pixels.
-num_filters12 = 64         # There are 36 of these filters.
+num_filters12 = 32         # There are 36 of these filters.
 
 
 # Convolutional Layer 21.
@@ -43,11 +43,11 @@ filter_size52 = 3          # Convolution filters are 3x3 pixels.
 num_filters52 = 320         # There are 36 of these filters.
 
 # Fully-connected layer.
-fc_size = 10575               # Number of neurons in fully-connected layer.
+fc_size = 15               # Number of neurons in fully-connected layer.
 
 
 # We know that MNIST images are 100 pixels in each dimension.
-img_size = 100
+img_size = 10
 
 # Images are stored in one-dimensional arrays of this length.
 img_size_flat = img_size * img_size
@@ -71,7 +71,8 @@ def new_conv_layer(input,              # The previous layer.
                    num_input_channels, # Num. channels in prev. layer.
                    filter_size,        # Width and height of each filter.
                    num_filters,        # Number of filters.
-                   use_pooling=True):  # Use 2x2 max-pooling.
+                   use_pooling=True,   # Use 2x2 max-pooling.
+                   avg_pooling=False): # Use 7x7 avg-pooling. 
 
     # Shape of the filter-weights for the convolution.
     # This format is determined by the TensorFlow API.
@@ -111,6 +112,15 @@ def new_conv_layer(input,              # The previous layer.
                                strides=[1, 2, 2, 1],
                                padding='SAME')
 
+    # Use pooling to down-sample the image resolution?
+    if avg_pooling:
+        # This is 2x2 max-pooling, which means that we
+        # consider 2x2 windows and select the largest value
+        # in each window. Then we move 2 pixels to the next window.
+        layer = tf.nn.avg_pool(value=layer,
+                               ksize=[1, 7, 7, 1],
+                               strides=[1, 2, 2, 1],
+                               padding='VALID')
     # Rectified Linear Unit (ReLU).
     # It calculates max(x, 0) for each input pixel x.
     # This adds some non-linearity to the formula and allows us
@@ -175,4 +185,41 @@ def new_fc_layer(input,          # The previous layer.
     return layer
 
 
-
+def next_batch(aDataset, batch_size, shuffle=True):
+  # Ensure we update the global variable rather than a local copy.
+  global _epochs_completed
+  global _index_in_epoch
+  global _images
+  global _labels
+  _num_examples = aDataset.images.shape[0]
+  start = _index_in_epoch
+  if _epochs_completed == 0 and start == 0 and shuffle:
+    perm0 = numpy.arange(_num_examples)
+    numpy.random.shuffle(perm0)
+    _images = aDataset.images[perm0]
+    _labels = aDataset.labels[perm0]
+  # Go to the next epoch
+  if start + batch_size > _num_examples:
+    # Finished epoch
+    _epochs_completed += 1
+    # Get the rest examples in this epoch
+    rest_num_examples = _num_examples - start
+    images_rest_part = _images[start:_num_examples]
+    labels_rest_part = _labels[start:_num_examples]
+    # Shuffle the data
+    if shuffle:
+      perm = numpy.arange(_num_examples)
+      numpy.random.shuffle(perm)
+      _images = aDataset.images[perm]
+      _labels = aDataset.labels[perm]
+    # Start next epoch
+    start = 0
+    _index_in_epoch = batch_size - rest_num_examples
+    end = _index_in_epoch
+    images_new_part = _images[start:end]
+    labels_new_part = _labels[start:end]
+    return numpy.concatenate((images_rest_part, images_new_part), axis=0) , numpy.concatenate((labels_rest_part, labels_new_part), axis=0)
+  else:
+    _index_in_epoch += batch_size
+    end = _index_in_epoch
+    return _images[start:end], _labels[start:end]
