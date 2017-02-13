@@ -1,18 +1,20 @@
 exec(open("./DataImport.py").read())
 exec(open("./init.py").read())
 
-session = tf.Session()
-session.run(tf.global_variables_initializer())
+#Global variables
 train_batch_size = 64
 _epochs_completed = 0
 _index_in_epoch = 0
-perm0 = numpy.arange(data.train.images.shape[0])
-numpy.random.shuffle(perm0)
+perm0 = np.arange(data.train.images.shape[0])
+np.random.shuffle(perm0)
 _images = data.train.images[perm0]
 _labels = data.train.labels[perm0]
 
+#Session
+session = tf.Session()
+session.run(tf.global_variables_initializer())
 
-# Counter for total number of iterations performed so far.
+#Counter for total number of iterations performed so far.
 total_iterations = 0
 
 def optimize(num_iterations):
@@ -33,15 +35,16 @@ def optimize(num_iterations):
         # Put the batch into a dict with the proper names
         # for placeholder variables in the TensorFlow graph.
         feed_dict_train = {x: x_batch,
-                           y_true: y_true_batch}
+                           y_true: y_true_batch,
+                           keep_prob: 1.0}
 
-        # Run the optimizer using this batch of training data.
-        # TensorFlow assigns the variables in feed_dict_train
-        # to the placeholder variables and then runs the optimizer.
         session.run(optimizer, feed_dict=feed_dict_train)
 
         # Print status every 100 iterations.
         if i % 100 == 0:
+            feed_dict_train = {x: data.train.images,
+                               y_true: data.train.labels,
+                               keep_prob: 1.0}
             # Calculate the accuracy on the training-set.
             acc = session.run(accuracy, feed_dict=feed_dict_train)
 
@@ -80,10 +83,6 @@ def print_test_accuracy(show_example_errors=False,
     # will be calculated in batches and filled into this array.
     cls_pred = np.zeros(shape=num_test, dtype=np.int)
 
-    # Now calculate the predicted classes for the batches.
-    # We will just iterate through all the batches.
-    # There might be a more clever and Pythonic way of doing this.
-
     # The starting index for the next batch is denoted i.
     i = 0
 
@@ -99,7 +98,8 @@ def print_test_accuracy(show_example_errors=False,
 
         # Create a feed-dict with these images and labels.
         feed_dict = {x: images,
-                     y_true: labels}
+                     y_true: labels,
+                     keep_prob: 1.0}
 
         # Calculate the predicted class using TensorFlow.
         cls_pred[i:j] = session.run(y_pred_cls, feed_dict=feed_dict)
@@ -115,27 +115,14 @@ def print_test_accuracy(show_example_errors=False,
     correct = (cls_true == cls_pred)
 
     # Calculate the number of correctly classified images.
-    # When summing a boolean array, False means 0 and True means 1.
+    # False means 0 and True means 1.
     correct_sum = correct.sum()
 
-    # Classification accuracy is the number of correctly classified
-    # images divided by the total number of images in the test-set.
     acc = float(correct_sum) / num_test
 
-    # Print the accuracy.
+    # Accuracy.
     msg = "Accuracy on Test-Set: {0:.1%} ({1} / {2})"
     print(msg.format(acc, correct_sum, num_test))
-
-    # Plot some examples of mis-classifications, if desired.
-    if show_example_errors:
-        print("Example errors:")
-        plot_example_errors(cls_pred=cls_pred, correct=correct)
-
-    # Plot the confusion matrix, if desired.
-    if show_confusion_matrix:
-        print("Confusion Matrix:")
-        plot_confusion_matrix(cls_pred=cls_pred)
-
 
 
 print_test_accuracy()
