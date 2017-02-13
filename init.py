@@ -92,7 +92,7 @@ layer_conv52, weights_conv52 = \
                    use_pooling=False)
 
 layer_pool5 = \
-   new_avg_pool_layer(input=layer_conv12)
+   new_avg_pool_layer(input=layer_conv52)
 
 layer_dropout = tf.nn.dropout(layer_pool5, keep_prob)
 
