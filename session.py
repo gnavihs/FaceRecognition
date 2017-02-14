@@ -1,8 +1,8 @@
 exec(open("./DataImport.py").read())
-exec(open("./init.py").read())
+exec(open("./graph.py").read())
 
 #Global variables
-train_batch_size = 64
+train_batch_size = 16
 _epochs_completed = 0
 _index_in_epoch = 0
 perm0 = np  .arange(data.train.images.shape[0])
@@ -71,7 +71,7 @@ def optimize(num_iterations):
 
 
 # Split the test-set into smaller batches of this size.
-test_batch_size = 256
+test_batch_size = 16
 
 def print_test_accuracy(show_example_errors=False,
                         show_confusion_matrix=False ):
