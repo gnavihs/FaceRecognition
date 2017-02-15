@@ -124,7 +124,7 @@ def new_fc_layer(input,          # The previous layer.
 def new_avg_pool_layer(input):
   layer = tf.nn.avg_pool(value=input,
                          ksize=[1, 7, 7, 1],
-                         strides=[1, 2, 2, 1],
+                         strides=[1, 1, 1, 1],
                          padding='VALID')
   return layer
 
