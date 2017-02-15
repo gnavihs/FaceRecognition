@@ -2,7 +2,7 @@ exec(open("./DataImport.py").read())
 exec(open("./init.py").read())
 
 #Global variables
-train_batch_size = 64
+train_batch_size = 256
 _epochs_completed = 0
 _index_in_epoch = 0
 perm0 = np  .arange(data.train.images.shape[0])
